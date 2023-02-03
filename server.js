@@ -45,6 +45,7 @@ let user;
 app.get('/', (req, res) => {
     res.sendFile(__dirname + '/index.html')
 })
+
 app.post('/quotes', (req, res) => {
     user = {
         firstName: req.body.firstName,
@@ -55,7 +56,32 @@ app.post('/quotes', (req, res) => {
 
     let newUser = new User(user);
     newUser.save();
-    res.redirect('/');
+    res.redirect('/login');
+})
+
+app.get('/login', (req, res) => {
+    res.sendFile(__dirname + '/login.html')
+})
+
+app.post('/login', (req, res) => {
+    const myEmail = req.body.email
+    const myPassword = req.body.pass
+
+    User.findOne({email:myEmail},(error, results)=> {
+        
+        if (error){
+            res.send (error.message) 
+        }
+        else {
+            if (results.password === myPassword){
+                res.send("Login Successful, Welcome");
+            }
+            else {
+                res.send("Wrong Password");
+        }
+        }
+    })
+
 })
 
 
